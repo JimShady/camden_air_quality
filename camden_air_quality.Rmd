@@ -115,13 +115,11 @@ for (i in 1:length(rasters)) {
              breaks  <- no2_laei2013_breaks
              labels  <- no2_laei2013_labels }
 
-png(paste0('png_outputs/', names(raster_to_plot), '.png'), width = 10, height = 8, units = 'in', res = 300)
-
-levelplot(raster_to_plot,
+    plot <- levelplot(raster_to_plot,
           maxpixels = raster_to_plot@ncols/2 * raster_to_plot@nrows/2,
           margin = FALSE,
           colorkey = list(
-            at = seq(min(breaks), max(breaks), length = 17),
+            at = seq(min(breaks), max(breaks), length = length(breaks)),
             space = 'right',
             labels = list(at=seq(min(breaks), max(breaks), length = length(breaks)), 
                           labels = paste(" \n \n ",labels), 
@@ -134,8 +132,13 @@ levelplot(raster_to_plot,
           scales = list(draw = FALSE),
           col.regions = colours,
           at = breaks)
-
-dev.off()
+    
+    png(paste0('png_outputs/', names(raster_to_plot), '.png'), width = 10, height = 8, units = 'in', res = 300)
+    print(plot)
+    dev.off()
+    
+    cat("## Subject", names(raster_to_plot), "\n")
+    print(plot)
 
 }
 ```
