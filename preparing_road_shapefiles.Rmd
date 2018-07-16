@@ -1,0 +1,62 @@
+---
+title: "Preparing Shapefiles for web"
+author: "James David Smith"
+date: "9 July 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+rm(list=ls())
+
+knitr::opts_chunk$set(echo = TRUE)
+
+### Loading any missing libraries
+library(sf)
+
+```
+
+```{r get_shapefiles_into_r, warning=FALSE}
+shapefiles      <- list.files(path = 'X:/SmallProjects/Camden/Data/GIS/Shapefiles/', pattern = "\\.shp$", full.names = TRUE, recursive = TRUE, include.dirs = TRUE)
+
+shapefiles_list <- list()
+
+for (i in 1:length(shapefiles)) {
+  
+  shapefiles_list[[i]] <- st_read(shapefiles[i], quiet=T)
+  
+  shapefiles_list[[i]] <- st_set_crs(shapefiles_list[[i]], 27700)
+  
+  shapefiles_list[[i]]$OBJECTID   <- NULL
+  shapefiles_list[[i]]$DFT_NUMBER <- NULL
+  shapefiles_list[[i]]$multiplier <- NULL
+  shapefiles_list[[i]]$Shape_Leng <- NULL
+  
+  if (grepl('CamdenPM10Tot', shapefiles[i]) | grepl('CamdenPM25Tot', shapefiles[i])) {
+    shapefiles_list[[i]]$Exhaust    <- round(shapefiles_list[[i]]$Exhaust,0)
+    shapefiles_list[[i]]$Brake      <- round(shapefiles_list[[i]]$Brake,0)
+    shapefiles_list[[i]]$Resuspensi <- round(shapefiles_list[[i]]$Resuspensi,0)
+    shapefiles_list[[i]]$Tyre       <- round(shapefiles_list[[i]]$Tyre,0)
+  } else {
+    shapefiles_list[[i]]$Motorcycle <- round(shapefiles_list[[i]]$Motorcycle,0)
+    shapefiles_list[[i]]$Taxi       <- round(shapefiles_list[[i]]$Taxi,0)
+    shapefiles_list[[i]]$PetrolCar  <- round(shapefiles_list[[i]]$PetrolCar,0)
+    shapefiles_list[[i]]$DieselCar  <- round(shapefiles_list[[i]]$DieselCar,0)
+    shapefiles_list[[i]]$ElectricCa <- round(shapefiles_list[[i]]$ElectricCa,0)
+    shapefiles_list[[i]]$PetrolLgv  <- round(shapefiles_list[[i]]$PetrolLgv,0)
+    shapefiles_list[[i]]$DieselLgv  <- round(shapefiles_list[[i]]$DieselLgv,0)
+    shapefiles_list[[i]]$ElectricLg <- round(shapefiles_list[[i]]$ElectricLg,0)
+    shapefiles_list[[i]]$LtBus      <- round(shapefiles_list[[i]]$LtBus,0)
+    shapefiles_list[[i]]$Coach      <- round(shapefiles_list[[i]]$Coach,0)
+    shapefiles_list[[i]]$RigidHGV   <- round(shapefiles_list[[i]]$RigidHGV,0)
+    shapefiles_list[[i]]$ArticHGV   <- round(shapefiles_list[[i]]$ArticHGV,0)
+  }
+  
+  st_write(shapefiles_list[[i]], 
+           dsn = paste0('X:/SmallProjects/Camden/Data/GIS/processed_shapefiles/',
+                        sub(".*/",  "", shapefiles[[i]])),
+           delete_dsn=TRUE,
+           quiet=T)
+
+}
+
+```
