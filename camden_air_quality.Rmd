@@ -174,11 +174,11 @@ for (i in 1:length(rasters)) {
           at = breaks)
   }
   
-    png(paste0('png_outputs/', file_names[[i]], '.png'), width = 10, height = 8, units = 'in', res = 300)
+    png(paste0('png_outputs/', gsub('.asc', '', file_names[[i]]), '.png'), width = 10, height = 8, units = 'in', res = 300)
     print(plot)
     dev.off()
     
-    writeRaster(raster_to_plot, paste0('asc_outputs/', file_names[[i]]), format = "ascii", overwrite=T)
+    writeRaster(raster_to_plot, paste0('asc_outputs/', gsub('.asc', '', file_names[[i]])), format = "ascii", overwrite=T)
 
 }
 ```

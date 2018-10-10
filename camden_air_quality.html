@@ -92,6 +92,9 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
 }
@@ -248,11 +251,11 @@ source('https://raw.githubusercontent.com/KCL-ERG/colour_schemes/master/pm10_lae
           at = breaks)
   }
   
-    png(paste0('png_outputs/', file_names[[i]], '.png'), width = 10, height = 8, units = 'in', res = 300)
+    png(paste0('png_outputs/', gsub('.asc', '', file_names[[i]]), '.png'), width = 10, height = 8, units = 'in', res = 300)
     print(plot)
     dev.off()
     
-    writeRaster(raster_to_plot, paste0('asc_outputs/', file_names[[i]]), format = &quot;ascii&quot;, overwrite=T)
+    writeRaster(raster_to_plot, paste0('asc_outputs/', gsub('.asc', '', file_names[[i]])), format = &quot;ascii&quot;, overwrite=T)
 
 }</code></pre>
 
