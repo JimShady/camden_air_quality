@@ -1,0 +1,24 @@
+---
+title: "Camden Maps"
+author: "ERG, KCL"
+date: "12 October 2018"
+output: html_document
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "docs", output_file ="index.html") }) 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(mapview)
+library(raster)
+ukgrid = "+init=epsg:27700"
+```
+
+## NO2 Total - Camden Scenario 1
+```{r, echo=F}
+raster <- raster('C:/Users/stwb3498/Documents/Github/camden_air_quality/asc_outputs/2030_LES_Sc_CamdenPlus_NO2.asc')
+
+crs(raster) <- CRS(ukgrid)
+
+mapview(raster, maxpixels =  2018560)
+```
