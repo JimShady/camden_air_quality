@@ -1,0 +1,50 @@
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(devtools)
+devtools::install_github("r-spatial/mapview@develop")
+library(mapview)
+library(leaflet)
+library(raster)
+ukgrid = "+init=epsg:27700"
+```
+
+
+
+### NO2 in 2030
+
+```{r, echo=F, fig.width=30, fig.height=30}
+base        <- raster('C:/Users/stwb3498/Documents/Github/camden_air_quality/asc_outputs/2030_LES_Sc_NAEIBiomassScaled_NO2.asc')
+sc1         <- raster('C:/Users/stwb3498/Documents/Github/camden_air_quality/asc_outputs/2030_LES_Sc_CamdenPlus_NO2.asc')
+diff        <- base - sc1
+
+crs(base)   <- CRS(ukgrid)
+crs(sc1)    <- CRS(ukgrid)
+crs(diff)   <- CRS(ukgrid)
+
+mapviewOptions(leafletHeight = 700)
+
+panel_1     <- mapview(base, maxpixels =  2018560, legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
+                           query.digits = 2,
+                           query.type   = 'mousemove')
+
+panel_2     <- mapview(sc1, maxpixels =  2018560, legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
+                           query.digits = 2,
+                           query.type   = 'mousemove')
+
+panel_3     <- mapview(diff, maxpixels =  2018560, legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
+                           query.digits = 2,
+                           query.type   = 'mousemove')
+
+panel_1 <- removeMouseCoordinates(panel_1)
+panel_2 <- removeMouseCoordinates(panel_2)
+panel_3 <- removeMouseCoordinates(panel_3)
+
+panel_1 <- removeScaleBar(panel_1)
+panel_2 <- removeScaleBar(panel_2)
+panel_3 <- removeScaleBar(panel_3)
+
+sync(panel_1, panel_2, panel_3, ncol = 3)
+
+mapviewOptions(default = TRUE)
+```

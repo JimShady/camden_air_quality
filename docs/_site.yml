@@ -1,0 +1,12 @@
+name: "camden-air"
+navbar:
+  title: "Camden AQ Modelling"
+  left:
+    - text: "NO2"
+      href: camden_no2.html
+    - text: "NOx"
+      href: camden_nox.html
+    - text: "PM25"
+      href: camden_pm25.html
+    - text: "PM10"
+      href: camden_pm10.html
