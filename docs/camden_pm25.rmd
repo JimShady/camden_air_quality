@@ -6,14 +6,15 @@ devtools::install_github("r-spatial/mapview@develop")
 library(mapview)
 library(leaflet)
 library(raster)
+library(RColorBrewer)
+library(RCurl)
 ukgrid = "+init=epsg:27700"
 ```
-
-
-
+  
+     
 ### PM2.5 in 2030
 
-```{r, echo=F, fig.width=30, fig.height=30}
+```{r, echo=F}
 base        <- raster('C:/Users/stwb3498/Documents/Github/camden_air_quality/asc_outputs/2030_LES_Sc_NAEIBiomassScaled_PM25.asc')
 sc1         <- raster('C:/Users/stwb3498/Documents/Github/camden_air_quality/asc_outputs/2030_LES_Sc_CamdenPlus_PM25.asc')
 diff        <- base - sc1
@@ -24,15 +25,29 @@ crs(diff)   <- CRS(ukgrid)
 
 mapviewOptions(leafletHeight = 700)
 
-panel_1     <- mapview(base, maxpixels =  2018560, legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"), 
+eval(parse(text = getURL('https://raw.githubusercontent.com/KCL-ERG/colour_schemes/master/pm25_laei2013_colours_breaks.R')))
+
+min <- min(cellStats(base, 'min'), cellStats(sc1, 'min'))
+max <- max(cellStats(base, 'max'), cellStats(sc1, 'max'))
+
+panel_1     <- mapview(base, maxpixels =  2018560,
+                       legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
+                       at = seq(min, max, length = 12),
+                       col.regions = pm25_laei2013_colours,
                             query.digits = 2,
                             query.type   = 'mousemove')
 
-panel_2     <- mapview(sc1, maxpixels =  2018560, legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
+panel_2     <- mapview(sc1, maxpixels =  2018560,
+                       legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
+                       at = seq(min, max, length = 12),
+                       col.regions = pm25_laei2013_colours,
                             query.digits = 2,
                             query.type   = 'mousemove')
 
-panel_3     <- mapview(diff, maxpixels =  2018560, legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
+panel_3     <- mapview(diff, maxpixels =  2018560,
+                       legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
+                       at = seq(cellStats(diff, 'min'), cellStats(diff, 'max'), length = 12),
+                       col.regions = pm25_laei2013_colours,
                             query.digits = 2,
                             query.type   = 'mousemove')
 

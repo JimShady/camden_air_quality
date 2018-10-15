@@ -6,11 +6,12 @@ devtools::install_github("r-spatial/mapview@develop")
 library(mapview)
 library(leaflet)
 library(raster)
+library(RColorBrewer)
+library(RCurl)
 ukgrid = "+init=epsg:27700"
 ```
-
-
-
+  
+      
 ### NO2 in 2030
 
 ```{r, echo=F, fig.width=30, fig.height=30}
@@ -24,17 +25,31 @@ crs(diff)   <- CRS(ukgrid)
 
 mapviewOptions(leafletHeight = 700)
 
-panel_1     <- mapview(base, maxpixels =  2018560, legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
-                           query.digits = 2,
-                           query.type   = 'mousemove')
+eval(parse(text = getURL('https://raw.githubusercontent.com/KCL-ERG/colour_schemes/master/no2_laei2013_colours_breaks.R')))
 
-panel_2     <- mapview(sc1, maxpixels =  2018560, legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
-                           query.digits = 2,
-                           query.type   = 'mousemove')
+min <- min(cellStats(base, 'min'), cellStats(sc1, 'min'))
+max <- max(cellStats(base, 'max'), cellStats(sc1, 'max'))
 
-panel_3     <- mapview(diff, maxpixels =  2018560, legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
-                           query.digits = 2,
-                           query.type   = 'mousemove')
+panel_1     <- mapview(base, maxpixels =  2018560,
+                       legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
+                       at = seq(min, max, length = 17),
+                       col.regions = no2_laei2013_colours,
+                            query.digits = 2,
+                            query.type   = 'mousemove')
+
+panel_2     <- mapview(sc1, maxpixels =  2018560,
+                       legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
+                       at = seq(min, max, length = 17),
+                       col.regions = no2_laei2013_colours,
+                            query.digits = 2,
+                            query.type   = 'mousemove')
+
+panel_3     <- mapview(diff, maxpixels =  2018560,
+                       legend = TRUE, map.types = c("OpenStreetMap.BlackAndWhite"),
+                       at = seq(cellStats(diff, 'min'), cellStats(diff, 'max'), length = 17),
+                       col.regions = no2_laei2013_colours,
+                            query.digits = 2,
+                            query.type   = 'mousemove')
 
 panel_1 <- removeMouseCoordinates(panel_1)
 panel_2 <- removeMouseCoordinates(panel_2)
