@@ -104,6 +104,27 @@ source('https://raw.githubusercontent.com/KCL-ERG/colour_schemes/master/pm10_lae
 
 ```
 
+Create difference maps
+
+```{r create_difference_maps}
+
+rasters[[18]] <- rasters[[5]] - rasters[[1]]
+names(rasters[[18]]) <- 'NO2_difference'
+
+rasters[[19]] <- rasters[[6]] - rasters[[2]]
+names(rasters[[19]]) <- 'NOx_difference'
+
+rasters[[20]] <- rasters[[7]] - rasters[[3]]
+names(rasters[[20]]) <- 'PM10_difference'
+
+rasters[[21]] <- rasters[[8]] - rasters[[4]]
+names(rasters[[21]]) <- 'PM25_difference'
+
+adf_file_names <- c(adf_file_names, unlist(lapply(rasters[18:21], names)))
+file_names     <- c(file_names, unlist(lapply(rasters[18:21], names)))
+
+```
+
 Save as png and asc files.
 
 ```{r plot maps}
